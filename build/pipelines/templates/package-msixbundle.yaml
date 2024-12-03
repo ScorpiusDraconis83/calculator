@@ -20,7 +20,7 @@ jobs:
       in(dependencies.Buildx86.result, 'Succeeded', 'SucceededWithIssues', 'Skipped'),
       in(dependencies.BuildARM.result, 'Succeeded', 'SucceededWithIssues', 'Skipped'),
       in(dependencies.BuildARM64.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
-    ) 
+    )
   variables:
     skipComponentGovernanceDetection: true
     StoreBrokerMediaRootPath: $(TEMP)\SBMedia
@@ -41,7 +41,7 @@ jobs:
         displayName: Publish MsixBundleSigned artifact
         targetPath: $(Build.ArtifactStagingDirectory)\msixBundle
         artifactName: msixBundleSigned
-      - ${{ if eq(parameters.createStoreBrokerPackages, true) }}:      
+      - ${{ if eq(parameters.createStoreBrokerPackages, true) }}:
         - output: pipelineArtifact
           displayName: Publish StoreBroker Payload artifact
           targetPath: $(StoreBrokerPackagePath)
@@ -83,7 +83,7 @@ jobs:
       itemPattern: '**/*.msix'
       targetPath: $(Build.ArtifactStagingDirectory)\drop\ARM64
 
-  - ${{ if eq(parameters.createStoreBrokerPackages, true) }}:
+  - ${{ if or(eq(parameters.createStoreBrokerPackages, true), eq(parameters.signBundle, true)) }}:
     - task: UniversalPackages@0
       displayName: Download internals package
       inputs:
@@ -91,7 +91,7 @@ jobs:
         downloadDirectory: $(Build.SourcesDirectory)
         vstsFeed: WindowsInboxApps
         vstsFeedPackage: calculator-internals
-        vstsPackageVersion: 0.0.106
+        vstsPackageVersion: 0.0.112
 
   - task: PowerShell@2
     displayName: Generate MsixBundle mapping
@@ -117,10 +117,29 @@ jobs:
       targetFolder: $(Build.ArtifactStagingDirectory)\msixBundle
 
   - ${{ if eq(parameters.signBundle, true) }}:
-    - task: EsrpCodeSigning@2
+    - pwsh: |
+        $configPath = "$(Build.SourcesDirectory)\Tools\Build\Signing\ESRP-codesign.json"
+        $config = Get-Content -Raw $configPath | ConvertFrom-Json
+        $esrpAppRegClientId = $config.AppRegistrationClientId
+        $esrpAppRegTenantId = $config.AppRegistrationClientId
+        $esrpClientId = $config.EsrpClientId
+        echo AppRegistrationClientId:$esrpAppRegClientId, AppRegTenantId:$esrpAppRegTenantId, EsrpClientId:$esrpClientId
+        echo "##vso[task.setvariable variable=EsrpAppRegClientId]$esrpAppRegClientId"
+        echo "##vso[task.setvariable variable=EsrpAppRegTenantId]$esrpAppRegTenantId"
+        echo "##vso[task.setvariable variable=EsrpClientId]$esrpClientId"
+      displayName: Get ESRP config
+
+    - task: EsrpCodeSigning@5
       displayName: Send msixbundle to code signing service
       inputs:
-        ConnectedServiceName: Essential Experiences Codesign
+        ConnectedServiceName: Essential Experiences Codesign PME
+        UseMSIAuthentication: true
+        AppRegistrationClientId: $(EsrpAppRegClientId)
+        AppRegistrationTenantId: $(EsrpAppRegTenantId)
+        EsrpClientId: $(EsrpClientId)
+        AuthAKVName: EE-Apps-CodeSign-KV
+        AuthCertName: EE-Auth-Cert
+        AuthSignCertName: EE-Codesign-Cert
         FolderPath: $(Build.ArtifactStagingDirectory)\msixBundle
         Pattern: Microsoft.WindowsCalculator_8wekyb3d8bbwe.msixbundle
         signConfigType: inlineSignParams
@@ -151,7 +170,7 @@ jobs:
             }
           ]
 
-    - ${{ if eq(parameters.createStoreBrokerPackages, true) }}:      
+    - ${{ if eq(parameters.createStoreBrokerPackages, true) }}:
       - powershell: |
           # Just modify this line to indicate where your en-us PDP file is. Leave the other lines alone.
           $enUSPdpFilePath = "$(Build.SourcesDirectory)\PDP\en-US\PDP.xml"
@@ -170,11 +189,11 @@ jobs:
           vstsFeed: WindowsInboxApps
           vstsFeedPackage: calculator-pdp-media
           vstsPackageVersion: $(SBMediaReleaseVersion)
-      
-      - task: MS-RDX-MRO.windows-store-publish-dev.package-task.store-package@2
+
+      - task: MS-RDX-MRO.windows-store-publish-dev.package-task.store-package@3
         displayName: Create StoreBroker Payload
         inputs:
-          serviceEndpoint: Calculator StoreBroker Connection
+          serviceEndpoint: Calculator StoreBroker FC
           sbConfigPath: Tools/Build/StoreBroker/SBCalculatorConfig.json
           sourceFolder: $(Build.ArtifactStagingDirectory)/msixBundle
           contents: Microsoft.WindowsCalculator_8wekyb3d8bbwe.msixbundle

@@ -18,7 +18,6 @@ using namespace CalculatorApp::ViewModel;
 using namespace CalculationManager;
 using namespace Platform;
 using namespace Platform::Collections;
-using namespace std;
 using namespace Windows::System;
 using namespace Windows::Storage;
 using namespace Utils;
@@ -73,6 +72,17 @@ void ApplicationViewModel::Categories::set(IObservableVector<NavCategoryGroup ^>
     }
 }
 
+CalculatorApp::ViewModel::Snapshot::ApplicationSnapshot ^ ApplicationViewModel::Snapshot::get()
+{
+    auto snapshot = ref new CalculatorApp::ViewModel::Snapshot::ApplicationSnapshot();
+    snapshot->Mode = static_cast<int>(Mode);
+    if (m_CalculatorViewModel != nullptr && m_mode == ViewMode::Standard)
+    {
+        snapshot->StandardCalculator = m_CalculatorViewModel->Snapshot;
+    }
+    return snapshot;
+}
+
 void ApplicationViewModel::Initialize(ViewMode mode)
 {
     if (!NavCategoryStates::IsValidViewMode(mode) || !NavCategoryStates::IsViewModeEnabled(mode))
@@ -103,6 +113,15 @@ void ApplicationViewModel::Initialize(ViewMode mode)
             // Throw the original exception so we have a good stack to debug.
             throw;
         }
+    }
+}
+
+void ApplicationViewModel::RestoreFromSnapshot(CalculatorApp::ViewModel::Snapshot::ApplicationSnapshot ^ snapshot)
+{
+    Mode = static_cast<ViewMode>(snapshot->Mode);
+    if (snapshot->StandardCalculator != nullptr)
+    {
+        m_CalculatorViewModel->Snapshot = snapshot->StandardCalculator;
     }
 }
 
@@ -151,9 +170,9 @@ void ApplicationViewModel::OnModeChanged()
     {
         if (!m_ConverterViewModel)
         {
-            auto dataLoader = make_shared<UnitConverterDataLoader>(ref new GeographicRegion());
-            auto currencyDataLoader = make_shared<CurrencyDataLoader>(make_unique<CurrencyHttpClient>());
-            m_ConverterViewModel = ref new UnitConverterViewModel(make_shared<UnitConversionManager::UnitConverter>(dataLoader, currencyDataLoader));
+            auto dataLoader = std::make_shared<UnitConverterDataLoader>(ref new GeographicRegion());
+            m_ConverterViewModel =
+                ref new UnitConverterViewModel(std::make_shared<UnitConversionManager::UnitConverter>(dataLoader, std::make_shared<CurrencyDataLoader>()));
         }
 
         m_ConverterViewModel->Mode = m_mode;

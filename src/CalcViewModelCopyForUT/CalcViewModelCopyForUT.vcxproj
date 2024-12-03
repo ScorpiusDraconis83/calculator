@@ -136,6 +136,7 @@
       <AdditionalOptions>/bigobj /await /std:c++17 /utf-8 %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <PreprocessorDefinitions>VIEWMODEL_FOR_UT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -156,6 +157,7 @@
       <AdditionalOptions>/bigobj /await /std:c++17 /utf-8 %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <PreprocessorDefinitions>VIEWMODEL_FOR_UT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -176,6 +178,7 @@
       <AdditionalOptions>/bigobj /await /std:c++17 /utf-8 %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <PreprocessorDefinitions>VIEWMODEL_FOR_UT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -196,6 +199,7 @@
       <AdditionalOptions>/bigobj /await /std:c++17 /utf-8 %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <PreprocessorDefinitions>VIEWMODEL_FOR_UT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -216,6 +220,7 @@
       <AdditionalOptions>/bigobj /await /std:c++17 /utf-8 %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <PreprocessorDefinitions>VIEWMODEL_FOR_UT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -236,6 +241,7 @@
       <AdditionalOptions>/bigobj /await /std:c++17 /utf-8 %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <PreprocessorDefinitions>VIEWMODEL_FOR_UT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -256,6 +262,7 @@
       <AdditionalOptions>/bigobj /await /std:c++17 /utf-8 %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <PreprocessorDefinitions>VIEWMODEL_FOR_UT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -276,6 +283,7 @@
       <AdditionalOptions>/bigobj /await /std:c++17 /utf-8 %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <PreprocessorDefinitions>VIEWMODEL_FOR_UT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -319,8 +327,6 @@
     <ClInclude Include="..\CalcViewModel\Common\TraceLogger.h" />
     <ClInclude Include="..\CalcViewModel\Common\Utils.h" />
     <ClInclude Include="..\CalcViewModel\DataLoaders\CurrencyDataLoader.h" />
-    <ClInclude Include="..\CalcViewModel\DataLoaders\CurrencyHttpClient.h" />
-    <ClInclude Include="..\CalcViewModel\DataLoaders\ICurrencyHttpClient.h" />
     <ClInclude Include="..\CalcViewModel\DataLoaders\UnitConverterDataConstants.h" />
     <ClInclude Include="..\CalcViewModel\DataLoaders\UnitConverterDataLoader.h" />
     <ClInclude Include="..\CalcViewModel\DateCalculatorViewModel.h" />
@@ -333,6 +339,7 @@
     <ClInclude Include="..\CalcViewModel\HistoryViewModel.h" />
     <ClInclude Include="..\CalcViewModel\MemoryItemViewModel.h" />
     <ClInclude Include="..\CalcViewModel\pch.h" />
+    <ClInclude Include="..\CalcViewModel\Snapshots.h" />
     <ClInclude Include="..\CalcViewModel\StandardCalculatorViewModel.h" />
     <ClInclude Include="..\CalcViewModel\targetver.h" />
     <ClInclude Include="..\CalcViewModel\UnitConverterViewModel.h" />
@@ -356,7 +363,6 @@
     <ClCompile Include="..\CalcViewModel\Common\TraceLogger.cpp" />
     <ClCompile Include="..\CalcViewModel\Common\Utils.cpp" />
     <ClCompile Include="..\CalcViewModel\DataLoaders\CurrencyDataLoader.cpp" />
-    <ClCompile Include="..\CalcViewModel\DataLoaders\CurrencyHttpClient.cpp" />
     <ClCompile Include="..\CalcViewModel\DataLoaders\UnitConverterDataLoader.cpp" />
     <ClCompile Include="..\CalcViewModel\DateCalculatorViewModel.cpp" />
     <ClCompile Include="..\CalcViewModel\GraphingCalculator\EquationViewModel.cpp" />
@@ -375,8 +381,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\CalcViewModel\Snapshots.cpp" />
     <ClCompile Include="..\CalcViewModel\StandardCalculatorViewModel.cpp" />
     <ClCompile Include="..\CalcViewModel\UnitConverterViewModel.cpp" />
+    <ClCompile Include="DataLoaders\CurrencyHttpClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CalcManager\CalcManager.vcxproj">
@@ -389,23 +397,6 @@
       <Project>{fc81ff41-02cd-4cd9-9bc5-45a1e39ac6ed}</Project>
     </ProjectReference>
   </ItemGroup>
-  <ItemDefinitionGroup Condition="!Exists('..\CalcViewModel\DataLoaders\DataLoaderConstants.h')">
-    <ClCompile>
-      <AdditionalOptions>/DUSE_MOCK_DATA %(AdditionalOptions)</AdditionalOptions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <Choose>
-    <When Condition="Exists('..\CalcViewModel\DataLoaders\DataLoaderConstants.h')">
-      <ItemGroup>
-        <ClInclude Include="..\CalcViewModel\DataLoaders\DataLoaderConstants.h" />
-      </ItemGroup>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <ClInclude Include="..\CalcViewModel\DataLoaders\DataLoaderMockConstants.h" />
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
   <ItemGroup>
     <None Include="..\CalcViewModel\DataLoaders\DefaultFromToCurrency.json" />
   </ItemGroup>

@@ -24,8 +24,7 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
-    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-    <PackageCertificateKeyFile>WindowsDev_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
     <AppxBundle>Always</AppxBundle>
     <GenerateProjectSpecificOutputFolder>true</GenerateProjectSpecificOutputFolder>
@@ -144,6 +143,7 @@
     <Compile Include="Common\AlwaysSelectedCollectionView.cs" />
     <Compile Include="Common\AppLifecycleLogger.cs" />
     <Compile Include="Common\KeyboardShortcutManager.cs" />
+    <Compile Include="Common\LaunchArguments.cs" />
     <Compile Include="Common\ValidatingConverters.cs" />
     <Compile Include="Controls\CalculationResult.cs" />
     <Compile Include="Controls\CalculationResultAutomationPeer.cs" />
@@ -165,8 +165,10 @@
     <Compile Include="Converters\RadixToStringConverter.cs" />
     <Compile Include="Converters\VisibilityNegationConverter.cs" />
     <Compile Include="Selectors\NavViewMenuItemTemplateSelector.cs" />
+    <Compile Include="Utils\DeflateUtils.cs" />
     <Compile Include="Utils\ResourceVirtualKey.cs" />
     <Compile Include="Utils\ResourceString.cs" />
+    <Compile Include="Utils\JsonUtils.cs" />
     <Compile Include="Utils\ThemeHelper.cs" />
     <Compile Include="Views\GraphingCalculator\EquationStylePanelControl.xaml.cs">
       <DependentUpon>EquationStylePanelControl.xaml</DependentUpon>
@@ -799,6 +801,9 @@
       <Version>6.2.14</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml" Version="2.8.1" />
+    <PackageReference Include="System.Text.Json">
+      <Version>8.0.5</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CalcViewModel\CalcViewModel.vcxproj">
@@ -816,7 +821,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\CalculatorIcons.ttf" />
-    <None Include="WindowsDev_TemporaryKey.pfx" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

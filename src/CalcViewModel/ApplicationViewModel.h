@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "Snapshots.h"
 #include "StandardCalculatorViewModel.h"
 #include "DateCalculatorViewModel.h"
 #include "GraphingCalculator/GraphingCalculatorViewModel.h"
@@ -18,6 +19,7 @@ namespace CalculatorApp
             ApplicationViewModel();
 
             void Initialize(CalculatorApp::ViewModel::Common::ViewMode mode); // Use for first init, use deserialize for rehydration
+            void RestoreFromSnapshot(CalculatorApp::ViewModel::Snapshot::ApplicationSnapshot^ snapshot);
 
             OBSERVABLE_OBJECT();
             OBSERVABLE_PROPERTY_RW(StandardCalculatorViewModel ^, CalculatorViewModel);
@@ -68,6 +70,11 @@ namespace CalculatorApp
                     return CalculatorApp::ViewModel::Common::NavCategory::IsCalculatorViewMode(Mode) ? Windows::UI::Xaml::Visibility::Visible
                                                                                           : Windows::UI::Xaml::Visibility::Collapsed;
                 }
+            }
+
+            property CalculatorApp::ViewModel::Snapshot::ApplicationSnapshot  ^ Snapshot
+            {
+                CalculatorApp::ViewModel::Snapshot::ApplicationSnapshot ^ get();
             }
 
             static property Platform::String ^ LaunchedLocalSettings
