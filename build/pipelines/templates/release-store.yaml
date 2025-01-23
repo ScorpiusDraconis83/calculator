@@ -17,11 +17,11 @@ jobs:
     displayName: Download storeBrokerPayload artifact
     artifact: storeBrokerPayload
 
-  - task: MS-RDX-MRO.windows-store-publish-dev.flight-task.store-flight@2
+  - task: MS-RDX-MRO.windows-store-publish-dev.flight-task.store-flight@3
     displayName: Flight StoreBroker Payload to team ring
     name: StoreBrokerFlight
     inputs:
-      serviceEndpoint: Calculator StoreBroker Connection
+      serviceEndpoint: Calculator StoreBroker FC
       appId: $(AppId)
       flightId: $(FlightId)
       inputMethod: JsonAndZip
@@ -34,12 +34,12 @@ jobs:
       deletePackages: true
       numberOfPackagesToKeep: 0
 
-  - task: APS-Aero-Package.aero-upload-task.AeroUploadTask.AeroUpload@0
-    displayName: Aero Upload
+  - task: APS-Aero-Package.aero-upload-task.AeroUploadTask.AeroUpload@1
+    displayName: Aero Upload (FC)
     inputs:
       productId: $(ProductId)
       flightId: $(FlightId)
       submissionId: $(StoreBrokerFlight.WS_SubmissionId)
       submissionDataPath: $(StoreBrokerPackagePath)\SBCalculator.json
       packagePath: $(StoreBrokerPackagePath)\SBCalculator.zip
-      serviceEndpoint: AeroUpload-APS-Calculator
+      serviceEndpoint: AeroUpload-Calculator-FC

@@ -87,6 +87,7 @@
       <Filter>GraphingCalculator</Filter>
     </ClCompile>
     <ClCompile Include="..\CalcViewModel\Common\RadixType.cpp" />
+    <ClCompile Include="..\CalcViewModel\Snapshots.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CalcViewModel\Common\AppResourceProvider.h">
@@ -176,12 +177,6 @@
     <ClInclude Include="..\CalcViewModel\DataLoaders\CurrencyHttpClient.h">
       <Filter>DataLoaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\CalcViewModel\DataLoaders\DataLoaderMockConstants.h">
-      <Filter>DataLoaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\CalcViewModel\DataLoaders\ICurrencyHttpClient.h">
-      <Filter>DataLoaders</Filter>
-    </ClInclude>
     <ClInclude Include="..\CalcViewModel\DataLoaders\UnitConverterDataConstants.h">
       <Filter>DataLoaders</Filter>
     </ClInclude>
@@ -204,6 +199,7 @@
     <ClInclude Include="..\CalcViewModel\Common\AlwaysSelectedCollectionView.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\CalcViewModel\Snapshots.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\CalcViewModel\DataLoaders\DefaultFromToCurrency.json">

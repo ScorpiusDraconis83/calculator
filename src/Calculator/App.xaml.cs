@@ -73,15 +73,22 @@ namespace CalculatorApp
 
         protected override void OnActivated(IActivatedEventArgs args)
         {
-            if (args.Kind == ActivationKind.Protocol)
+            if (args.Kind != ActivationKind.Protocol)
             {
-                // We currently don't pass the uri as an argument,
-                // and handle any protocol launch as a normal app launch.
+                return;
+            }
+            else if (args.TryGetSnapshotProtocol(out var protoArgs))
+            {
+                OnAppLaunch(args, protoArgs.GetSnapshotLaunchArgs(), false);
+            }
+            else
+            {
+                // handle any unknown protocol launch as a normal app launch.
                 OnAppLaunch(args, null, false);
             }
         }
 
-        private void OnAppLaunch(IActivatedEventArgs args, string argument, bool isPreLaunch)
+        private void OnAppLaunch(IActivatedEventArgs args, object arguments, bool isPreLaunch)
         {
             // Uncomment the following lines to display frame-rate and per-frame CPU usage info.
             //#if DEBUG
@@ -132,7 +139,7 @@ namespace CalculatorApp
             // When the navigation stack isn't restored navigate to the first page,
             // configuring the new page by passing required information as a navigation
             // parameter
-            if (rootFrame.Content == null && !rootFrame.Navigate(typeof(MainPage), argument))
+            if (rootFrame.Content == null && !rootFrame.Navigate(typeof(MainPage), arguments))
             {
                 // We couldn't navigate to the main page, kill the app so we have a good
                 // stack to debug
